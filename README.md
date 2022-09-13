@@ -1,2 +1,2 @@
-# Faceit-Warmup-
+# Faceit-Warmup
 Plugins CSGO, Faceit Warmup
