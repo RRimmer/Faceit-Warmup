@@ -3,10 +3,9 @@
 
 #include sdktools_gamerules
 
-int iWeaponParent, iStartMoney;
+int iWeaponParent, iStartMoney, iTimeDelete;
 Handle hTimer;
 ConVar cvStartMoney, cvTimeDelete, cvGotMoney;
-int fTimeDelete;
 bool bGotMoney;
 
 public Plugin myinfo    =
@@ -28,13 +27,13 @@ public void OnPluginStart()
  
     AutoExecConfig(true, "FaceitWarmup");
  
-    HookConVarChange((cvStartMoney = CreateConVar("sm_fw_start_money", "16000", "Кол-во устанавливаемых бабок на разминке")), OnCVChanged);
+    HookConVarChange((cvStartMoney = CreateConVar("sm_fw_start_money", "16000", "Кол-во устанавливаемых денег на разминке")), OnCVChanged);
     iStartMoney = cvStartMoney.IntValue;
  
     HookConVarChange((cvTimeDelete = CreateConVar("sm_fw_time_delete", "1", "Каждые N секунд удалять выпавшее оружие")), OnCVChanged);
-    fTimeDelete = cvTimeDelete.IntValue;
+    iTimeDelete = cvTimeDelete.IntValue;
  
-    HookConVarChange((cvGotMoney = CreateConVar("sm_fw_got_money", "1.0", "Способ установки бабок [0 - после покупки | 1 - после спавна]", _, true, 0.0, true, 1.0)), OnCVChanged);
+    HookConVarChange((cvGotMoney = CreateConVar("sm_fw_got_money", "1", "Способ установки денег [0 - после покупки | 1 - после спавна]")), OnCVChanged);
     bGotMoney = cvGotMoney.BoolValue;
 }
 
@@ -43,7 +42,7 @@ public void OnCVChanged(ConVar convar, const char[] oldValue, const char[] newVa
     if(convar != INVALID_HANDLE)
     {
         if(convar == cvStartMoney) iStartMoney = convar.IntValue;
-        else if(convar == cvTimeDelete) fTimeDelete = convar.IntValue;
+        else if(convar == cvTimeDelete) iTimeDelete = convar.IntValue;
         else if(convar == cvGotMoney) bGotMoney  = convar.BoolValue;
     }
 }
@@ -67,7 +66,7 @@ public void eventPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 public void OnMapStart()
 {
-    hTimer = CreateTimer(float(fTimeDelete), timerXUY, _, TIMER_REPEAT);
+    hTimer = CreateTimer(float(iTimeDelete), timerXUY, _, TIMER_REPEAT);
 }
 
 Action timerXUY(Handle timer)
